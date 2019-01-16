@@ -20,7 +20,7 @@
 
 
 import sqlite3
-import os
+
 
 fileList = ('information.docx','Hello.txt','myImage.png','myMovie.mpg','World.txt','data.pdf','myPhoto.jpg')
 
