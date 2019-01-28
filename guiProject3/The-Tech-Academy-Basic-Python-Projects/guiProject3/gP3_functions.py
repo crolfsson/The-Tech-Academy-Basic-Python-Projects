@@ -108,8 +108,10 @@ def onMove(self):
         for filename in os.listdir(var_source):
             if filename.endswith(".txt"):
                 shutil.move(os.path.join(var_source,filename),var_destination)
+                onClear(self)
     else:
-        messagebox.showerror("Directory missing", "Please select a Source or Destination directory.")
+        messagebox.showerror("Directory missing. Please select a Source or Destination directory.")
+        onClear(self)
 
 
 
@@ -128,6 +130,7 @@ def addFile(Self):
     conn = sqlite3.connect('db_files.db')
     with conn:
         cursor = conn.cursor()
+        cursor.execute("""SELECT COUNT(col_fname) FROM tbl_files WHERE col_fname = '{}'""".format(var_destination))
         count = cursor.fetchone()[0]
         chkFname = count
         if chkFname == 0:
@@ -135,7 +138,6 @@ def addFile(Self):
                 cursor.execute("""INSERT INTO tbl_files (col_fname,col_mdate) VALUES (?,?)""",(var_destination,modTime))
                 print("File name: {}".format(var_destination))
                 print("Modification date: {}".format(modTime))
-                onClear(self)
     conn.commit()
     conn.close()
 
