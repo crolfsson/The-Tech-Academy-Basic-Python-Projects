@@ -110,6 +110,7 @@ def onMove(self):
                 shutil.move(os.path.join(var_source,filename),var_destination)
     else:
         messagebox.showerror("Directory missing", "Please select a Source or Destination directory.")
+    addFile(self)
 
 
 
@@ -121,21 +122,19 @@ def onClear(self):
 
 
 # Add time stamp, insert to database and print
-def addFile(Self):
+def addFile(self):
     var_destination = self.txt_destination.get()
     modTime = datetime.datetime.fromtimestamp(os.path.getmtime(var_destination))
+    files = os.listdir(var_destination)
     
     conn = sqlite3.connect('db_files.db')
     with conn:
         cursor = conn.cursor()
-        count = cursor.fetchone()[0]
-        chkFname = count
-        if chkFname == 0:
-            for i in var_destination:
-                cursor.execute("""INSERT INTO tbl_files (col_fname,col_mdate) VALUES (?,?)""",(var_destination,modTime))
-                print("File name: {}".format(var_destination))
-                print("Modification date: {}".format(modTime))
-                onClear(self)
+        for i in files:
+            cursor.execute("""INSERT INTO tbl_files (col_fname,col_mdate) VALUES (?,?)""",(i,modTime))
+            print("File name: {}".format(i))
+            print("Modification date: {}".format(modTime))
+            onClear(self)
     conn.commit()
     conn.close()
 
